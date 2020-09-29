@@ -65,6 +65,8 @@ namespace TestingNetNetCore.Controllers
         {
             PersonalDetail pdetail = new PersonalDetail();
             pdetail = PersonMemory.GetPersons().Where(x => x.PersonalDetailId == personDetailId).FirstOrDefault();
+            
+
 
             return View(pdetail);
         }
@@ -73,14 +75,21 @@ namespace TestingNetNetCore.Controllers
         [HttpPost]
         public IActionResult EditPersonalDetail(PersonalDetail personDetail)
         {
+            if(ModelState.IsValid) { 
+            
             var personInList = PersonMemory.GetPersons().Where(x => x.PersonalDetailId == personDetail.PersonalDetailId).FirstOrDefault();
 
             personInList.FirstName = personDetail.FirstName;
             personInList.Occupation = personDetail.Occupation;
             personInList.Age = personDetail.Age;
             personInList.Address = personDetail.Address;
-
+            
             return RedirectToAction("Persons");
+            }
+            else
+            {
+                return View(personDetail);
+            }
         }
 
         public IActionResult CreatePerson()
@@ -104,8 +113,8 @@ namespace TestingNetNetCore.Controllers
 
         public IActionResult DeletePerson(int personDetailId)
         {
-            var personInList = PersonMemory.GetPersons().Where(person => person.PersonalDetailId == personDetailId ).FirstOrDefault();
-            PersonMemory.GetPersons().Remove(personInList);
+            var person = PersonMemory.GetPersons().Where(person => person.PersonalDetailId == personDetailId ).FirstOrDefault();
+            PersonMemory.GetPersons().Remove(person);
 
             return RedirectToAction("Persons");
         }
